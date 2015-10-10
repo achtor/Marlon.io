@@ -5,18 +5,10 @@ from dateutil import parser
 # scrapeUCPD accesses an archive on the UCPD website,
 # scrapes it starting from the given input date,
 # and yields the data row by row
-'''
-def scrapeUCPD(resource, start):
-   url_stem = 'https://incidentreports.uchicago.edu/' + resource + '.php?startDate='
-   response = urllib2.urlopen('url_stem' + stuff)
-   html = response.read()
-   for
-   yield row
-'''
 
 # scrapes an individual page for a table
 # converts the table into a list of lists
-def pagescrape(url): 
+def pageScrape(url): 
     page = urllib2.urlopen(url).read()
     soup = BeautifulSoup(page)
     # get table text
@@ -43,7 +35,7 @@ def pagescrape(url):
         yield(row2)
             
 #given a startdate, figure out how many offsets needed for all pages
-def getoffset(start):
+def getOffset(start):
     url = "https://incidentreports.uchicago.edu/incidentReportArchive.php?startDate=" + \
     start+"&endDate=10000000000"
     page = urllib2.urlopen(url).read()
@@ -56,12 +48,12 @@ def getoffset(start):
     return(st*5)
 
 #scrape all, given a start date
-def fullscrape(start):
-    offset = getoffset(start)
+def fullScrape(start):
+    offset = getOffset(start)
     for i in range(0,offset,5):
         url = "https://incidentreports.uchicago.edu/incidentReportArchive.php?startDate=" + \
         start + "&endDate=10000000000&offset=" + str(i)
-        iterable = pagescrape(url)
+        iterable = pageScrape(url)
         for page in iterable:
             print i
             print url
