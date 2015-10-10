@@ -27,7 +27,8 @@ def pageScrape(start,report,offset):
     for td in tds:
         row.append(td)
         count += 1
-        if('No field interviews' in str(td) or 'No traffic stops' in str(td)):
+        if('No field interviews' in str(td) or 'No traffic stops' in str(td) 
+        or 'No Incident Reports' in str(td)):
             count = 0
             row = list()
         elif(count % cols == 0):
