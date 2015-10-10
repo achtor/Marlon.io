@@ -45,10 +45,6 @@ def pageScrape(start,report,offset):
             row2.append(a)
         yield(row2)
 
-#testing
-test = pageScrape('07%2F01%2F2015','field_interviews',0)
-for thing in test:
-    print thing
 #given a startdate, figure out how many offsets needed for all pages
 def getOffset(start,report):
     urlbase = 'https://incidentreports.uchicago.edu/'
