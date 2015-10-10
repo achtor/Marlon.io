@@ -5,10 +5,22 @@ from dateutil import parser
 # scrapeUCPD accesses an archive on the UCPD website,
 # scrapes it starting from the given input date,
 # and yields the data row by row
+    
 
 # scrapes an individual page for a table
 # converts the table into a list of lists
-def pageScrape(url): 
+def pageScrape(start,report,offset):
+    urlbase = 'https://incidentreports.uchicago.edu/'
+    if report == 'incident':
+        urlreport = 'incidentReportArchive.php'
+        cols = 7
+    elif report == 'traffic':
+        urlreport = 'trafficStopsArchive.php'
+        cols = 9
+    elif report == 'interview':
+        urlreport = 'fieldInterviewsArchive.php'
+        cols = 8
+    url = urlbase + urlreport + '?startDate=' + start + '&endDate=10000000000&offset=' + str(offset)
     page = urllib2.urlopen(url).read()
     soup = BeautifulSoup(page)
     # get table text
@@ -21,7 +33,9 @@ def pageScrape(url):
     for td in tds:
         row.append(td)
         count += 1
-        if(count %7 ==0):
+        if('No field interviews' in str(td) or 'No traffic stops' in str(td)):
+            count = cols
+        if(count % cols == 0):
             lol.append(row)
             row = list()
     # remove tags
@@ -29,15 +43,23 @@ def pageScrape(url):
         row2 = list()
         for item in lst:
             a = str(item)
+            a = a.replace('<td colspan="9">','')
+            a = a.replace('<td colspan="8">','')
             a = a.replace('<td>','')
             a = a.replace('</td>','')
             row2.append(a)
         yield(row2)
-            
+
 #given a startdate, figure out how many offsets needed for all pages
-def getOffset(start):
-    url = "https://incidentreports.uchicago.edu/incidentReportArchive.php?startDate=" + \
-    start+"&endDate=10000000000"
+def getOffset(start,report):
+    urlbase = 'https://incidentreports.uchicago.edu/'
+    if report == 'incident':
+        urlreport = 'incidentReportArchive.php'
+    elif report == 'traffic':
+        urlreport = 'trafficStopsArchive.php'
+    elif report == 'interview':
+        urlreport = 'fieldInterviewsArchive.php'
+    url = urlbase + urlreport + '?startDate=' + start + '&endDate=10000000000'
     page = urllib2.urlopen(url).read()
     soup = BeautifulSoup(page)
     st = soup.find_all('span')[9]
@@ -48,17 +70,12 @@ def getOffset(start):
     return(st*5)
 
 #scrape all, given a start date
-def fullScrape(start):
-    offset = getOffset(start)
+def fullScrape(start,report):
+    offset = getOffset(start,report)
     for i in range(0,offset,5):
-        url = "https://incidentreports.uchicago.edu/incidentReportArchive.php?startDate=" + \
-        start + "&endDate=10000000000&offset=" + str(i)
-        iterable = pageScrape(url)
+        iterable = pageScrape(start, report, i)
         for page in iterable:
-            print i
-            print url
             yield page
-
 
 # updateTable puts an iterable of rows into the given table in the database
 def updateTable(table, rows):
