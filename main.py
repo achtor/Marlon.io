@@ -3,6 +3,7 @@ import datetime
 import ppygis
 import pprint
 
+
 def main():
    #Define our connection string
    conn_string = 'host=\'localhost\' dbname=\'ucpd_data\' user=\'postgres\' password=\'LynchTheGrinch\''
@@ -17,13 +18,12 @@ def main():
    cursor = conn.cursor()
    print 'Connected!\n'
    
-   #cursor.execute('INSERT INTO incidents (incident, reported, occurred, leeway, comments, disposition, \
-   #                ucpd_num, address, latlng) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
-   #               ('Theft', datetime.datetime(2015,6,10,6,0), datetime.datetime(2015,6,9,10,0),
-   #                datetime.timedelta(seconds=3600),'This was the evil action of a very bad person.',
-   #                'Open', '3#HE63', '5600 S Ellis Ave', ppygis.Point(34,-116))
-   #              ) 
-   #print 'Inserted!\n'
+   cursor.execute('INSERT INTO incidents (incident, reported, occurred, comments, disposition, \
+                   ucpd_num, address, latlng) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                  ('Theft', datetime.datetime(2015,6,10,6,0), 'This happened at the witching hour.', 'This was the evil action of a very bad person.',
+                   'Open', '3#HE63', '5600 S Ellis Ave', ppygis.Point(34,-116))
+                 ) 
+   print 'Inserted!\n'
     
    cursor.execute('SELECT * FROM incidents')
    records = cursor.fetchall()
