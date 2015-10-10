@@ -1,4 +1,4 @@
-import psycopg2, datetime, ppygis, pprint, urllib2, BeautifulSoup, daterangeparser, re
+import psycopg2, datetime, ppygis, pprint, urllib2, BeautifulSoup, daterangeparser, re,numpy as np
 from geopy.geocoders import Nominatim
 from dateutil import parser
 
@@ -13,6 +13,60 @@ def scrapeUCPD(resource, start):
    for
    yield row
 '''
+
+# scrapes an individual page for a table
+# converts the table into a list of lists
+def pagescrape(url): 
+    page = urllib2.urlopen(url).read()
+    soup = BeautifulSoup(page)
+    # get table text
+    for tr in soup.find_all('tbody'):
+        tds = tr.find_all('td')
+    # get list of lists
+    count = 0
+    row = list()
+    lol = list()
+    for td in tds:
+        row.append(td)
+        count += 1
+        if(count %7 ==0):
+            lol.append(row)
+            row = list()
+    # remove tags
+    for lst in lol:
+        row2 = list()
+        for item in lst:
+            a = str(item)
+            a = a.replace('<td>','')
+            a = a.replace('</td>','')
+            row2.append(a)
+        yield(row2)
+            
+#given a startdate, figure out how many offsets needed for all pages
+def getoffset(start):
+    url = "https://incidentreports.uchicago.edu/incidentReportArchive.php?startDate=" + \
+    start+"&endDate=10000000000"
+    page = urllib2.urlopen(url).read()
+    soup = BeautifulSoup(page)
+    st = soup.find_all('span')[9]
+    st = str(st)
+    st = st.replace('<span style="width:50px; border:none; color:#800;">1 /','')
+    st = st.replace(' </span>','')
+    st = int(st)
+    return(st*5)
+
+#scrape all, given a start date
+def fullscrape(start):
+    offset = getoffset(start)
+    for i in range(0,offset,5):
+        url = "https://incidentreports.uchicago.edu/incidentReportArchive.php?startDate=" + \
+        start + "&endDate=10000000000&offset=" + str(i)
+        iterable = pagescrape(url)
+        for page in iterable:
+            print i
+            print url
+            yield page
+
 
 # updateTable puts an iterable of rows into the given table in the database
 def updateTable(table, rows):
