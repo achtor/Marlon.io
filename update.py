@@ -71,17 +71,19 @@ def updateTable(table, rows):
          search = (row[7] != 'No')
          qtuple = (time, address, latlng, init, race, gender, reason, disposition, search)
 
-   # make the query
-   print query_string
-   print qtuple
-   cursor.execute(query_string, qtuple)
+      # make the query
+      print query_string
+      print qtuple
+      cursor.execute(query_string, qtuple)
 
    # commit
    conn.commit()
 
-rows = scrape.fullScrape('09%2F01%2F2015', 'field_interviews')
+rows = scrape.fullScrape('09%2F01%2F2015', 'incidents')
 for row in rows:
    print row
+# updateTable('incidents', rows)
+
 '''
 TESTS 
 row = ['10/1/2015 9:42 PM', '5700 Hyde Park', 'Asian', 'Female', 'Traffic Sign/Signal', 'Ran stop sign', 'N/A', 'Verbal Warning' ,'No']
