@@ -28,8 +28,9 @@ def pageScrape(start,report,offset):
         row.append(td)
         count += 1
         if('No field interviews' in str(td) or 'No traffic stops' in str(td)):
-            count = cols
-        if(count % cols == 0):
+            count = 0
+            row = list()
+        elif(count % cols == 0):
             lol.append(row)
             row = list()
     # remove tags
@@ -44,6 +45,10 @@ def pageScrape(start,report,offset):
             row2.append(a)
         yield(row2)
 
+#testing
+test = pageScrape('07%2F01%2F2015','field_interviews',0)
+for thing in test:
+    print thing
 #given a startdate, figure out how many offsets needed for all pages
 def getOffset(start,report):
     urlbase = 'https://incidentreports.uchicago.edu/'
