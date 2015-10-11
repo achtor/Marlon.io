@@ -1,11 +1,9 @@
-import psycopg2, datetime, ppygis, pprint, daterangeparser, re
-from geopy.geocoders import Nominatim
+import psycopg2, datetime, ppygis, pprint, daterangeparser, re, geocoder
 from dateutil import parser
 import scrape
 
 # updateTable puts an iterable of rows into the given table in the database
 def updateTable(table, rows):
-   geolocator = Nominatim()
 
    # open connection and get cursor
    conn_string = 'host=\'localhost\' dbname=\'ucpd_data\' user=\'postgres\' password=\'LynchTheGrinch\''
@@ -17,6 +15,8 @@ def updateTable(table, rows):
    cursor = conn.cursor()
    
    for row in rows: 
+      if row[0] == 'Void':
+         continue
       # put together query string
       query_string = 'INSERT INTO ' + table + ' '
       if table == 'incidents':
@@ -29,9 +29,9 @@ def updateTable(table, rows):
          disposition = row[5]
          ucpd_num = row[6]
          address = row[1]
-         location = geolocator.geocode(address + ', Chicago, Illinois')
+         location = geocoder.google(address + ', Chicago, Illinois').latlng
          try:
-            latlng = ppygis.Point(location.latitude, location.longitude)
+            latlng = ppygis.Point(location[0], location[1])
          except:
             latlng = None
          qtuple = (incident, reported, occurred, comments, disposition, ucpd_num, address, latlng)
@@ -40,9 +40,9 @@ def updateTable(table, rows):
                         disposition, search) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
          time = parser.parse(row[0])
          address = row[1]
-         location = geolocator.geocode(address + ', Chicago, Illinois')
+         location = geocoder.google(address + ', Chicago, Illinois').latlng
          try:
-            latlng = ppygis.Point(location.latitude, location.longitude)
+            latlng = ppygis.Point(location[0], location[1])
          except:
             latlng = None
          race = row[2]
@@ -58,9 +58,9 @@ def updateTable(table, rows):
                         disposition, search) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
          time = parser.parse(row[0])
          address = row[1]
-         location = geolocator.geocode(address + ', Chicago, Illinois')
+         location = geocoder.google(address + ', Chicago, Illinois').latlng
          try:
-            latlng = ppygis.Point(location.latitude, location.longitude)
+            latlng = ppygis.Point(location[0], location[1])
          except:
             latlng = None
          init = row[2]
@@ -79,22 +79,3 @@ def updateTable(table, rows):
    # commit
    conn.commit()
 
-rows = scrape.fullScrape('09%2F01%2F2015', 'incidents')
-for row in rows:
-   print row
-# updateTable('incidents', rows)
-
-'''
-TESTS 
-row = ['10/1/2015 9:42 PM', '5700 Hyde Park', 'Asian', 'Female', 'Traffic Sign/Signal', 'Ran stop sign', 'N/A', 'Verbal Warning' ,'No']
-rows = [row]
-updateTable('traffic_stops', rows)
-
-row = ['Harassment by Electronic Means', 'Greenwood at 58th', '2/9/11 12:52 PM', '1/14/11 to 2/1/11 various', 'Ex-boyfriend has harassed complainant with numerous unwanted email and voice messages', 'Open', 'X0172']
-rows = [row]
-updateTable('incidents', rows)
-
-row = ['10/8/2015 9:11 PM', '969 E 60th St', 'Citizen request for UCPD Response', 'Caucasian', 'Male', 'Suspicious person', 'Name checked; released; no further action', 'No']
-rows = [row]
-updateTable('field_interviews', rows)
-'''
