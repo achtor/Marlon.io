@@ -1,12 +1,13 @@
 import psycopg2, datetime, ppygis, pprint, daterangeparser, re, geocoder
 from dateutil import parser
 import scrape
+import db_conn
 
 # updateTable puts an iterable of rows into the given table in the database
 def updateTable(table, rows):
 
    # open connection and get cursor
-   conn_string = 'host=\'localhost\' dbname=\'ucpd_data\' user=\'postgres\' password=\'LynchTheGrinch\''
+   conn_string = db_conn.conn_string
    try:
       conn = psycopg2.connect(conn_string)
    except:
