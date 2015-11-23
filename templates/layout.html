@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link href="static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
+   <link href="static/css/style.css" rel="stylesheet" type="text/css" media="all">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <meta name="keywords" content="marlon, marlonio, marlon.io, lynch, marlon lynch, ucpd, uchicago, chicago, university of chicago, hyde park, kenwood, police data, transparency">
+   <link href="http://fonts.googleapis.com/css?family=Open+Sans:700,300,600,800,400" rel="stylesheet" type="text/css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+   <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+   <nav class="navbar navbar-default">
+      <div class="container-fluid">
+         <div class="navbar-header">
+            <a class="navbar-brand" href="#">Marlon.io</a>
+         </div>
+         <div>
+            <ul class="nav navbar-nav navbar-right">
+               <li class="{{'active' if request.path == '/'}}"><a href="/">Home</a></li>
+               <li class="{{'active' if request.path == '/api'}}"><a href="/api">API</a></li>
+               <li class="{{'active' if request.path == '/explore'}}"><a href="/explore">Explore</a></li>
+            </ul>
+         </div>
+      </div>
+   </nav>
+
+   <div class="container">
+      {% block content %}{% endblock %}
+   </div>
+
+   
+   <footer class="footer">
+      Website created using Bootstrap. Built by Ben Huynh / Peter Xu at the University of Chicago.
+   </footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}
+Marlon.io
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Exploring UCPD data.</h2>
+
+<p>Marlon.io (named lovingly after <a href="http://plenar.io">Plenar.io</a> and <a href="http://safety-security.uchicago.edu/about/department_of_safety_and_security_leadership/">Marlon C. Lynch</a>) is intended to provide an easy interface and API for accessing and visualizing data from police records provided by the <a href="http://safety-security.uchicago.edu/police/">Unversity of Chicago Police Department</a> (UCPD).
+</p>
+
+<h3>Background</h3>
+
+<p>The UCPD is a full-fledged police service in the service of the University of Chicago, and one of the largest private security forces in the world. It functions as a regular police force in the vicinity of the university, patrolling from 37th to 64th Street and from Cottage Grove to Lake Shore Drive.</p>
+
+<p>While the UCPD has long provided periodically-updated logs of incident reports for each day, for most of its existence this was the extent of its publicly available data: as a private police force, it is not subject to the same constraints under the <a href="http://foia.ilattorneygeneral.net/">Freedom of Information Act</a> as a public department. In response to petitioning for this information by community and student groups, including the Campaign for Equitable Policing, the UCPD <a href="http://safety-security.uchicago.edu/news/new_ucpd_data_information_now_online/">announced</a> it would begin releasing additional data on its website in June 2015.</p>
+
+<p>The original incidents dataset, field interview records, and traffic stop information are the three datasets regularly updated by the UCPD, available on its <a href="http://safety-security.uchicago.edu/police/data_information/">Data and Information</a> portal. These backlogs are in a somewhat awkward format for searching or compiling, so the aim of Marlon.io is to provide a simpler means of doing so. Refer to the <a href="/api">API</a> page for details on how to access the raw data, and the <a href="/explore">Explore</a> page for visualizations and other analyses of these datasets created using our tool.</p>
+
+<h3>Other resources<h3>
+<h4>Other UCPD resources</h4>
+All of these are linked on the UCPD Data and Information portal, as mentioned above, but are compiled here for completeness' sake.
+<ul>
+<li><a href="http://idot.illinois.gov/transportation-system/local-transportation-partners/law-enforcement/illinois-traffic-stop-study">Illinois Traffic Stop Study</a> - not UCPD-specific, but a statewise effort to analyze racial bias in traffic stops. Includes analyses of UCPD records.</li>
+<li><a href="http://safety-security.uchicago.edu/police/contact_the_ucpd/complaint_process/">UCPD Complaints</a> process, including documents containing annual reports on reviewed complaints, as well as findings of the Independent Review Committee intended to act as an oversight on the process.</li>
+<li><a href="http://safety-security.uchicago.edu/police/data_information/crime_trends/">Crime Trends</a> report by the UCPD.</li>
+<li><a href="http://safety-security.uchicago.edu/police/data_information/violent_crime_report/">Violent Crimes Report</a> by the UCPD.</li>
+<li>Arrest records are available under request; UCPD contact information is available <a href="http://safety-security.uchicago.edu/police/contact_the_ucpd/">here</a>.</li>
+</ul>
+<h4>Other civic data in Chicago</h4>
+<ul>
+<li>The <a href="http://safety-security.uchicago.edu/police/contact_the_ucpd/">Citizens Police Data Project</a>, a project of the <a href="http://invisible.institute/">Invisible Institute</a>, hosts and presents data on complaints against CPD officers.</li>
+<li><a href="http://plenar.io">Plenar.io</a> is a "centralized hub" for a great deal of Chicago data, including an API providing many different kinds of access and a flexible platform.</li>
+<li>The <a href="https://data.cityofchicago.org/">Chicago Data Portal</a> is the city's own repository for its datasets, from which many of the Plenar.io datasets are drawn.</li>
+<li><a href="http://chihacknight.org/">Chi Hack Night</a> is a weekly civic hacking meetup downtown, hosted by <a href="http://opencityapps.org/">Open City Apps</a>. <a href="http://datamade.us/about-us/">DataMade</a> is an associated civic tech company.</li>
+<li>At the University of Chicago, <a href="http://dssg.io/">Data Science for Social Good</a> is a summer fellowship in applying data to social issues; it is closely tied to similar work by the <a href="http://dsapp.org/">Center for Data Science and Public Policy</a> and the  <a href="http://www.urbanccd.org/#urbanccd">Urban Center for Computation and Data</a>.
+
+{% endblock %}

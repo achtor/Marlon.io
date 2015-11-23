@@ -1,4 +1,4 @@
-from flask import Flask, abort
+from flask import Flask, abort, render_template
 from flask_restful import Resource, Api, reqparse
 import psycopg2, psycopg2.extras, ppygis
 import db_conn
@@ -115,7 +115,14 @@ api.add_resource(UCPD, '/api/detail/<dataset_name>')
 
 @app.route('/')
 def root():
-   return 'We out here'
+   return render_template('index.html')
+
+@app.route('/api')
+def api():
+   return render_template('api.html')
+@app.route('/explore')
+def explore():
+   return render_template('explore.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
