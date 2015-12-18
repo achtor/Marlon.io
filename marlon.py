@@ -1,12 +1,27 @@
-from flask import Flask, abort, render_template
+from flask import Flask, request, abort, render_template, make_response
 from flask_restful import Resource, Api, reqparse
 import psycopg2, psycopg2.extras, ppygis
 import db_conn
 import json, datetime, time
 from bson import json_util
+import io, csv
 
 app = Flask(__name__)
 api = Api(app)
+
+"""
+@api.representation('application/json')
+def output_json(data, code, headers=None):
+   resp = make_response('test', code)
+   resp.headers.extend(headers or {})
+   return resp
+
+@api.representation('text/csv')
+def output_csv(data, code, headers=None):
+   resp = make_response(str(data), code)
+   resp.headers.extend(headers or {})
+   return resp
+"""
 
 parser = reqparse.RequestParser()
 parser.add_argument('address', type=str, help='Search address string of location occurred')
@@ -109,6 +124,15 @@ class UCPD(Resource):
          r.pop('st_x', None)
          r.pop('st_y', None)
          r.pop('latlng', None)
+      if request.args.get("format") == "csv":
+         output = io.BytesIO()
+         writer = csv.DictWriter(output, records[0].keys())
+         writer.writeheader()
+         writer.writerows(records) 
+         data =  output.getvalue()
+         response = make_response(data)
+         response.headers['content-type'] = 'text/csv'
+         return response
       return records
 
 api.add_resource(UCPD, '/api/detail/<dataset_name>')
