@@ -9,20 +9,6 @@ import io, csv
 app = Flask(__name__)
 api = Api(app)
 
-"""
-@api.representation('application/json')
-def output_json(data, code, headers=None):
-   resp = make_response('test', code)
-   resp.headers.extend(headers or {})
-   return resp
-
-@api.representation('text/csv')
-def output_csv(data, code, headers=None):
-   resp = make_response(str(data), code)
-   resp.headers.extend(headers or {})
-   return resp
-"""
-
 parser = reqparse.RequestParser()
 parser.add_argument('address', type=str, help='Search address string of location occurred')
 parser.add_argument('disposition', type=str, help='Look up records with a certain disposition')
@@ -66,7 +52,12 @@ class UCPD(Resource):
       if args['disposition']:
          where_args = where_args + [cursor.mogrify( 'LOWER(disposition) =  LOWER(%s)',(args['disposition'],))]
       if args['geom']:
-         where_args = where_args + [cursor.mogrify( 'ST_CONTAINS(%s, latlng)', (ppygis.Polygon(args['geom'],)))]
+         try:
+            linestrings = json.loads(args['geom'])
+            poly = ppygis.Polygon([ppygis.LineString([ppygis.Point(float(p[0]),float(p[1])) for p in ls]) for ls in linestrings])
+         except:
+            return {'error':'Geometry formatting incorrect.'}
+         where_args = where_args + [cursor.mogrify( 'ST_CONTAINS(%s, latlng)', (poly,))]
       if dataset_name == 'incidents':
          if args['comments']:
             where_args = where_args + [cursor.mogrify( 'comments ILIKE %s',('%' + args['comments'] + '%',))]

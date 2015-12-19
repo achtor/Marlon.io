@@ -13,7 +13,83 @@ Marlon.io - API
 /api/detail/traffic_stops
 </pre>
 
-<p>These are the primary way to access the three datasets; more information on these can be found on the <a href="http://safety-security.uchicago.edu/police/data_information/">UCPD page</a> (note that "incidents" are linked as "Daily Crime/Fire Log" in the sidebar). Each can be filtered in a variety of ways:
+<p>These are the primary way to access the three datasets; more information on these can be found on the <a href="http://safety-security.uchicago.edu/police/data_information/">UCPD page</a> (note that "incidents" are linked as "Daily Crime/Fire Log" in the sidebar). Each can be filtered in a variety of (non-case-sensitive) ways:
 
+<div class="accordion" id="accordion2">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+        Incidents filters
+      </a>
+    </div>
+    <div id="collapseOne" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <ul>
+           <li><strong>format</strong> &mdash; format in which to accept the data; <code>json</code> (default) or <code>csv</code> supported.</li>
+           <li><strong>geom</strong> &mdash; JSON-formatted input of a polygonal region (in PPyGIS coordinates) in which to search.</li>
+           <li><strong>address</strong> &mdash; search the text of the address string of the location.</li>
+           <li><strong>disposition</strong> &mdash; look up records with a given disposition.</li>
+           <li><strong>time1, time2</strong> &mdash; HHMMSS format time range (hours 0-23) for reporting of incident.</li>
+           <li><strong>date1, date2</strong> &mdash; YYYYMMDD format date range for reporting of incident.</li>
+           <li><strong>comments</strong> &mdash; search text of officer comments on incident.</li>
+           <li><strong>incident</strong> &mdash; search name of incident.</li>
+           <li><strong>ucpd_num</strong> &mdash; look up incident by UCPD number.</li>
+        </ul>
+      <p>Example query: <a href="api/detail/incidents?date1=20150902&date2=20150915&disposition=arrest">Fetch all incidents that occurred from September 9, 2015 to September 15, 2015 (inclusive/noninclusive respectively) which resulted in an arrest.</a>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+        Field interviews filters
+      </a>
+    </div>
+    <div id="collapseTwo" class="accordion-body collapse">
+      <div class="accordion-inner">
+         <ul>
+           <li><strong>format</strong> &mdash; format in which to accept the data; <code>json</code> (default) or <code>csv</code> supported.</li>
+           <li><strong>geom</strong> &mdash; JSON-formatted input of a polygonal region (in PPyGIS coordinates) in which to search.</li>
+           <li><strong>address</strong> &mdash; search the text of the address string of the location.</li>
+           <li><strong>disposition</strong> &mdash; look up records with a given disposition.</li>
+           <li><strong>time1, time2</strong> &mdash; HHMMSS format time range (hours 0-23) for record of incident.</li>
+           <li><strong>date1, date2</strong> &mdash; YYYYMMDD format date range for record of incident.</li>
+           <li><strong>race</strong> &mdash; filter reports by race (Caucasian, African American, Asian, or Hispanic).</li>
+           <li><strong>gender</strong> &mdash; filter reports by gender (male or female).</li>
+           <li><strong>reason</strong> &mdash; search text of reason given for interview.</li>
+           <li><strong>init</strong> &mdash; search text of initiator of interview.</li>
+           <li><strong>search</strong> &mdash; 1 or 0, to filter for interviews involving or not involving a search.</li>
+        </ul>
+      Example query: <a href="api/detail/field_interviews?time1=090000&time2=220000&race=african%20american&init=citizen">Fetch the complete history of field interviews which occurred between 9:00 AM and 10:00 PM in which the interviewee was African-American and the initiator description contained the word "citizen".</a>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+        Traffic stops filters
+      </a>
+    </div>
+    <div id="collapseThree" class="accordion-body collapse">
+      <div class="accordion-inner">
+         <ul>
+           <li><strong>format</strong> &mdash; format in which to accept the data; <code>json</code> (default) or <code>csv</code> supported.</li>
+           <li><strong>geom</strong> &mdash; JSON-formatted input of a polygonal region (in PPyGIS coordinates) in which to search.</li>
+           <li><strong>address</strong> &mdash; search the text of the address string of the location.</li>
+           <li><strong>disposition</strong> &mdash; look up records with a given disposition.</li>
+           <li><strong>time1, time2</strong> &mdash; HHMMSS format time range (hours 0-23) for record.</li>
+           <li><strong>date1, date2</strong> &mdash; YYYYMMDD format date range for record.</li>
+           <li><strong>race</strong> &mdash; filter reports by race (Caucasian, African American, Asian, or Hispanic).</li>
+           <li><strong>gender</strong> &mdash; filter reports by gender (male or female).</li>
+           <li><strong>reason</strong> &mdash; search text of reason given for stop.</li>
+           <li><strong>cit_viol</strong> &mdash; search text of description of citations/violations issued.</li>
+           <li><strong>idot</strong> &mdash; search text of IDOT classification.</li>
+        </ul>
+      Example query: <a href="api/detail/traffic_stops?search=0&gender=female">Fetch the complete history of traffic stops which involved a female driver who was not searched.</a>
+      </div>
+    </div>
+  </div>
+
+</div>
 
 {% endblock %}

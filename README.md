@@ -8,3 +8,5 @@ Filters can be added specific to each of the three datasets `incidents`, `traffi
 /api/detail/incidents?time1=010000&time2=150000&comments=disturbance
 ```
 searches the `incidents` dataset for all records which occurred between 1:00 AM and 3:00 PM, and whose "comments" field contains the word disturbance (not case sensitive).
+
+Built on the Flask RESTful package, and Celery/BeautifulSoup/urllib2 for scraping. Website scraped together using Bootstrap, and d3.js for presentation of the data.

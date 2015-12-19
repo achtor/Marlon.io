@@ -45,4 +45,14 @@ body {
    text-align: right;
 }
 
+.accordion-heading, .accordion-body {
+   padding: 10px;
+}
 
+.accordion-heading {
+   background-color: #F9F9F9;
+}
+
+.accordion-body {
+   background-color: #F5F5F5;
+}
