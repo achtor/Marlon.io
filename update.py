@@ -73,8 +73,6 @@ def updateTable(table, rows):
          qtuple = (time, address, latlng, init, race, gender, reason, disposition, search)
 
       # make the query
-      print query_string
-      print qtuple
       cursor.execute(query_string, qtuple)
 
    # commit

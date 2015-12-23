@@ -15,8 +15,11 @@ def pageScrape(start,report,offset):
         urlreport = 'fieldInterviewsArchive.php'
         cols = 8
     url = urlbase + urlreport + '?startDate=' + start + '&endDate=10000000000&offset=' + str(offset)
-    page = urllib2.urlopen(url).read()
-    soup = BeautifulSoup(page)
+    try:
+       page = urllib2.urlopen(url).read()
+       soup = BeautifulSoup(page)
+    except:
+       raise Exception
     # get table text
     for tr in soup.find_all('tbody'):
         tds = tr.find_all('td')
@@ -56,8 +59,11 @@ def getOffset(start,report):
     elif report == 'field_interviews':
         urlreport = 'fieldInterviewsArchive.php'
     url = urlbase + urlreport + '?startDate=' + start + '&endDate=10000000000'
-    page = urllib2.urlopen(url).read()
-    soup = BeautifulSoup(page)
+    try:
+       page = urllib2.urlopen(url).read()
+       soup = BeautifulSoup(page)
+    except:
+       raise Exception
     st = soup.find_all('span')[9]
     st = str(st)
     st = st.replace('<span style="width:50px; border:none; color:#800;">1 /','')
@@ -67,8 +73,11 @@ def getOffset(start,report):
 
 #scrape all, given a start date
 def fullScrape(start,report):
-    offset = getOffset(start,report)
-    for i in range(0,offset,5):
-        iterable = pageScrape(start, report, i)
-        for page in iterable:
-            yield page
+    try:
+       offset = getOffset(start,report)
+       for i in range(0,offset,5):
+           iterable = pageScrape(start, report, i)
+           for page in iterable:
+               yield page
+    except:
+       raise Exception
