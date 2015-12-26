@@ -15,7 +15,7 @@ nav li {
    font-size: 15px;
 }
 
-.container li {
+ul.bullets {
    margin-left: 25px;
 }
 
@@ -55,4 +55,20 @@ body {
 
 .accordion-body {
    background-color: #F5F5F5;
+}
+
+#getdata {
+   background-color: #F5F5F5;
+   border-radius: 5px;
+   padding: 10px;
+   display: none;
+}
+
+#getdata input {
+   max-width: 90%;
+   width: 600px;
+}
+
+#getdata button {
+   float: right;
 }
