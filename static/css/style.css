@@ -72,3 +72,24 @@ body {
 #getdata button {
    float: right;
 }
+
+.explorebox {
+   background-color: #F5F5F5;
+   padding: 10px;
+   margin: 10px 0;
+}
+
+.explorebox p {
+   margin-top: 10px;
+}
+
+.explorebox img {
+   float: right;
+   height: 200px;
+   margin-left: 30px;
+}
+
+#mapcaption {
+   margin-top: 5px;
+   text-align: center;
+}

@@ -135,9 +135,14 @@ def root():
 @app.route('/api')
 def api():
    return render_template('api.html')
+
 @app.route('/explore')
 def explore():
    return render_template('explore.html')
+
+@app.route('/query')
+def query():
+   return render_template('query.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

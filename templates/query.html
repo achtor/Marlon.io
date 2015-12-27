@@ -1,0 +1,292 @@
+{% extends "layout.html" %}
+{% block title %}
+Marlon.io - Query generator
+{% endblock %}
+
+{% block scripts %}
+
+<!-- javascript goes here! -->
+<link href="static/css/leaflet.css" rel="stylesheet" type="text/css" media="all">
+<link href="static/css/leaflet.draw.css" rel="stylesheet" type="text/css" media="all">
+<script src="static/js/leaflet.js"></script>
+<script src="static/js/leaflet.draw.js"></script>
+
+<script>
+   $(function() {
+      $( "#date1" ).datepicker();
+      $( "#date2" ).datepicker();
+   });
+   function get_data(dataset) {
+      urlstem = 'http://localhost:5000';
+      urlmid = '/api/detail/' + dataset;
+      props = $( 'form#' + dataset ).serializeArray();
+      dict = {}
+      for (var i in props) {
+         if (props[i]['value'] != "") dict[props[i]['name']] = encodeURI(props[i]['value']);
+         // something funky happens with quotation marks in particular... maybe look into this eventually
+      }
+      urlend = '?' + $.param(dict);
+      var polys = [];
+      drawnItems.eachLayer(function(layer) {
+         latlngs = layer.getLatLngs();
+         for (var i in latlngs) {
+            latlngs[i] = [latlngs[i]['lat'],latlngs[i]['lng']];
+         }
+         polys.push(latlngs);
+      });
+      if (polys.length != 0) {
+         geom = JSON.stringify(polys);
+         urlend += '&geom=' + geom;
+      }
+      $('#getdata').hide();
+      $('#api').val(urlstem + urlmid + urlend);
+      $('#download').attr('href', urlmid + urlend + '&format=csv');
+      $('#getdata').slideToggle(500, function () { });
+   }
+
+   function highlight(zone) {
+      var req = new XMLHttpRequest();
+      req.onload = function(e) { 
+         var points = JSON.parse(this.responseText)[zone][0];
+         for (i in points) {
+            points[i] = new L.LatLng(points[i][0], points[i][1]);
+         }
+         var col = '#404000';
+         if (zone == 'campus') col = '#800000';
+         var poly = L.polygon(points, { color: col });
+         drawnItems.addLayer(poly);
+      };
+      req.open("get", "static/boundary.json", true);
+      req.send();
+   }
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Query generator</h2>
+<hr>
+<div class="row">
+<div class="col-md-6">
+<ul class="nav nav-pills" style="padding-bottom: 15px;">
+  <li class="active"><a data-toggle="pill" href="#incidents">Incidents</a></li>
+  <li><a data-toggle="pill" href="#field">Field interviews</a></li>
+  <li><a data-toggle="pill" href="#traffic">Traffic stops</a></li>
+</ul>
+
+
+<div class="tab-content">
+   <div id="incidents" class="tab-pane fade in active">
+      <form role="form" action="javascript:get_data('incidents');" name="incidents" id="incidents">
+
+      <p>All fields optional.</p>
+
+      <div class="form-group">
+         <label for="date1">Date range:</label> <input type="text" name="date1" id="date1">
+         <label for="date2">to</label> <input type="text" name="date2" id="date2">
+      </div>
+      <div class="form-group">
+         <label for="time1">Time range:</label> <input type="text" name="time1">
+         <label for="time2">to</label>
+         <input type="text" name="time2">
+
+         <p>(military time, HH:MM)</p>
+      </div>
+      <div class="form-group">
+      <label for="incident">Incident description:</label> <input type="text" name="incident" class="form-control">
+      </div>
+      <div class="form-group">
+      <label for="comments">Officer comments:</label> <input type="text" name="comments" class="form-control">
+      </div>
+      <div class="form-group">
+      <label for="ucpd_num">UCPD#:</label> <input type="text" name="incident">
+      </div>
+      <div class="form-group">
+      <label for="address">Address:</label> <input type="text" name="address">
+      </div>
+      <div class="form-group">
+      <label for="disposition">Disposition:</label> <input type="text" name="disposition">
+      </div>
+
+      <div class="form-group">
+      <button name="submit" class="btn btn-info">Get data</button>
+      </div>
+      </form>
+   </div>
+   <div id="field" class="tab-pane fade">
+      <form role="form" action="javascript:get_data('field_interviews');" name="field_interviews" id="field_interviews">
+
+      <p>All fields optional.</p>
+
+      <div class="form-group">
+         <label for="date1">Date range:</label> <input type="text" name="date1" id="date1">
+         <label for="date2">to</label> <input type="text" name="date2" id="date2">
+      </div>
+      <div class="form-group">
+         <label for="time1">Time range:</label> <input type="text" name="time1">
+         <label for="time2">to</label>
+         <input type="text" name="time2">
+
+         <p>(military time, HH:MM)</p>
+      </div>
+      <div class="form-group">
+      <label for="reason">Reason:</label> <input type="text" name="reason" class="form-control">
+      </div>
+      <div class="form-group">
+      <label for="init">Initiator:</label> <input type="text" name="init">
+      </div>
+      <div class="form-group">
+      <label for="race">Race:</label>
+      <select name="race">
+      <option value=""></option>
+      <option value="African American">African American</option>
+      <option value="Asian">Asian</option>
+      <option value="Caucasian">Caucasian</option>
+      <option value="Hispanic">Hispanic</option>
+      </select>
+      </div>
+      <div class="form-group">
+      <label for="gender">Gender:</label>
+      <select name="gender">
+      <option value=""></option>
+      <option value="Female">Female</option>
+      <option value="Male">Male</option>
+      </select>
+      </div>
+      <div class="form-group">
+      <label for="search">Search?</label>
+      <select name="search">
+      <option value=""></option>
+      <option value="0">No</option>
+      <option value="1">Yes</option>
+      </select>
+      </div>
+      <div class="form-group">
+      <label for="address">Address:</label> <input type="text" name="address">
+      </div>
+      <div class="form-group">
+      <label for="disposition">Disposition:</label> <input type="text" name="disposition">
+      </div>
+      <div class="form-group">
+      <button name="submit" class="btn btn-info">Get data</button>
+      </div>
+      </form>
+   </div>
+   <div id="traffic" class="tab-pane fade">
+      <form role="form" action="javascript:get_data('traffic_stops');" name="traffic_stops" id="traffic_stops">
+
+      <p>All fields optional.</p>
+
+      <div class="form-group">
+         <label for="date1">Date range:</label> <input type="text" name="date1" id="date1">
+         <label for="date2">to</label> <input type="text" name="date2" id="date2">
+      </div>
+      <div class="form-group">
+         <label for="time1">Time range:</label> <input type="text" name="time1">
+         <label for="time2">to</label>
+         <input type="text" name="time2">
+
+         <p>(military time, HH:MM)</p>
+      </div>
+      <div class="form-group">
+      <label for="reason">Reason for stop:</label> <input type="text" name="reason" class="form-control">
+      </div>
+      <div class="form-group">
+      <label for="cit_viol">Citations/violations:</label> <input type="text" name="cit_viol" class="form-control">
+      </div>
+      <div class="form-group">
+      <label for="idot">IDOT classification:</label> <input type="text" name="idot">
+      </div>
+      <div class="form-group">
+      <label for="race">Race:</label>
+      <select name="race">
+      <option value=""></option>
+      <option value="African American">African American</option>
+      <option value="Asian">Asian</option>
+      <option value="Caucasian">Caucasian</option>
+      <option value="Hispanic">Hispanic</option>
+      </select> 
+      </div>
+      <div class="form-group">
+      <label for="gender">Gender:</label>
+      <select name="gender">
+      <option value=""></option>
+      <option value="Female">Female</option>
+      <option value="Male">Male</option>
+      </select>
+      </div>
+      <div class="form-group">
+      <label for="address">Address:</label> <input type="text" name="address">
+      </div>
+      <div class="form-group">
+      <label for="disposition">Disposition:</label> <input type="text" name="disposition">
+      </div>
+
+      <div class="form-group">
+      <button name="submit" class="btn btn-info">Get data</button>
+      </div>
+      </form>
+  </div>
+</div>
+</div>
+
+<div class="col-md-6">
+<div id="map" class="map map-home" style="height: 400px;"></div> 
+<div id="mapcaption"><a href="javascript:highlight('patrol');">Select UCPD patrol zone</a> | <a href="javascript:highlight('campus');">Select UChicago main campus</a></div>
+</div>
+<script>
+var map = L.map('map').setView([41.8, -87.59], 13);
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '<a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+
+var drawControl = new L.Control.Draw({
+   draw: {
+      position: 'topleft',
+      polygon: {
+         allowIntersection: false,
+         drawError: {
+            color: '#b00b00',
+            timeout: 1000
+         },
+         shapeOptions: {
+            color: '#000080'
+         },
+         showArea: true
+      },
+      polyline: false,
+      circle: false,
+      marker: false
+   },
+   edit: {
+      featureGroup: drawnItems
+   }
+});
+map.addControl(drawControl);
+
+map.on('draw:created', function (e) {
+   var type = e.layerType,
+   layer = e.layer;
+
+   if (type === 'marker') {
+      layer.bindPopup('A popup!');
+   }
+
+   drawnItems.addLayer(layer);
+});
+</script>
+</div>
+<div class="row">
+<div class="col-md-12">
+<div id="getdata">
+<label for="api">API link:</label> <input type="text" name="api" id="api"></input> <a href="#" id="download"><button name="download" class="btn btn-success">Download CSV</button></a>
+</div>
+</div>
+</div>
+{% endblock %}

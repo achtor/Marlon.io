@@ -3,296 +3,50 @@
 Marlon.io - Explore
 {% endblock %}
 
-{% block scripts %}
-
-<!-- javascript goes here! -->
-<link href="static/css/leaflet.css" rel="stylesheet" type="text/css" media="all">
-<link href="static/css/leaflet.draw.css" rel="stylesheet" type="text/css" media="all">
-<script src="static/js/leaflet.js"></script>
-<script src="static/js/leaflet.draw.js"></script>
-
-<script>
-   $(function() {
-      $( "#date1" ).datepicker();
-      $( "#date2" ).datepicker();
-   });
-   function get_data(dataset) {
-      urlstem = 'http://localhost:5000';
-      urlmid = '/api/detail/' + dataset;
-      props = $( 'form#' + dataset ).serializeArray();
-      dict = {}
-      for (var i in props) {
-         if (props[i]['value'] != "") dict[props[i]['name']] = encodeURI(props[i]['value']);
-         // something funky happens with symbols... look into this eventually
-      }
-      urlend = '?' + $.param(dict);
-      var polys = [];
-      drawnItems.eachLayer(function(layer) {
-         latlngs = layer.getLatLngs();
-         for (var i in latlngs) {
-            latlngs[i] = [latlngs[i]['lat'],latlngs[i]['lng']];
-         }
-         polys.push(latlngs);
-      });
-      geom = JSON.stringify(polys);
-      urlend += '&geom=' + geom;
-      $('#getdata').hide();
-      $('#api').val(urlstem + urlmid + urlend);
-      $('#download').attr('href', urlmid + urlend + '&format=csv');
-      $('#getdata').slideToggle(500, function () { });
-  }
-</script>
-
-{% endblock %}
-
 
 {% block content %}
 
-<h2>Query generator</h2>
-<hr>
-<div class="row">
-<div class="col-md-6">
-<ul class="nav nav-pills" style="padding-bottom: 15px;">
-  <li class="active"><a data-toggle="pill" href="#incidents">Incidents</a></li>
-  <li><a data-toggle="pill" href="#field">Field interviews</a></li>
-  <li><a data-toggle="pill" href="#traffic">Traffic stops</a></li>
+<h2>Explore</h2>
+<div class="explorebox">
+<img src="/static/images/query.png">
+<a href="/query">Query generator</a>
+
+<p>Input filters in a form (including geographic filters) to obtain an API query URL, as well as a link to a downloadable CSV, for each of the three datasets.</p>
+
+<div style="clear:both;"></div>
+</div>
+<div class="explorebox">
+<strong>Marker map</strong>
+
+<p>Coming soon.</p>
+</div>
+<div class="explorebox">
+<strong>Time series heatmap</strong>
+
+<p>Coming soon.</p>
+</div>
+<div class="explorebox">
+<strong>Interactive visualizer</strong>
+
+<p>Coming soon.</p>
+</div>
+
+<h3>Other resources<h3>
+<h4>Other UCPD resources</h4>
+All of these are linked on the UCPD Data and Information portal, as mentioned above, but are compiled here for completeness' sake.
+<ul class="bullets">
+<li><a href="http://idot.illinois.gov/transportation-system/local-transportation-partners/law-enforcement/illinois-traffic-stop-study">Illinois Traffic Stop Study</a> - not UCPD-specific, but a statewise effort to analyze racial bias in traffic stops. Includes analyses of UCPD records.</li>
+<li><a href="http://safety-security.uchicago.edu/police/contact_the_ucpd/complaint_process/">UCPD Complaints</a> process, including documents containing annual reports on reviewed complaints, as well as findings of the Independent Review Committee intended to act as an oversight on the process.</li>
+<li><a href="http://safety-security.uchicago.edu/police/data_information/crime_trends/">Crime Trends</a> report by the UCPD.</li>
+<li><a href="http://safety-security.uchicago.edu/police/data_information/violent_crime_report/">Violent Crimes Report</a> by the UCPD.</li>
+<li>Arrest records are available under request; UCPD contact information is available <a href="http://safety-security.uchicago.edu/police/contact_the_ucpd/">here</a>.</li>
 </ul>
-
-
-<div class="tab-content">
-   <div id="incidents" class="tab-pane fade in active">
-      <form role="form" action="javascript:get_data('incidents');" name="incidents" id="incidents">
-
-      <p>All fields optional.</p>
-
-      <div class="form-group">
-         <label for="date1">Date range:</label> <input type="text" name="date1" id="date1">
-         <label for="date2">to</label> <input type="text" name="date2" id="date2">
-      </div>
-      <div class="form-group">
-         <label for="time1">Time range:</label> <input type="text" name="time1">
-         <label for="time2">to</label>
-         <input type="text" name="time2">
-
-         <p>(military time, HH:MM)</p>
-      </div>
-      <div class="form-group">
-      <label for="incident">Incident description:</label> <input type="text" name="incident" class="form-control">
-      </div>
-      <div class="form-group">
-      <label for="comments">Officer comments:</label> <input type="text" name="comments" class="form-control">
-      </div>
-      <div class="form-group">
-      <label for="ucpd_num">UCPD#:</label> <input type="text" name="incident">
-      </div>
-      <div class="form-group">
-      <label for="address">Address:</label> <input type="text" name="address">
-      </div>
-      <div class="form-group">
-      <label for="disposition">Disposition:</label> <input type="text" name="disposition">
-      </div>
-
-      <div class="form-group">
-      <button name="submit" class="btn btn-info">Get data</button>
-      </div>
-      </form>
-   </div>
-   <div id="field" class="tab-pane fade">
-      <form role="form" action="javascript:get_data('field_interviews');" name="field_interviews" id="field_interviews">
-
-      <p>All fields optional.</p>
-
-      <div class="form-group">
-         <label for="date1">Date range:</label> <input type="text" name="date1" id="date1">
-         <label for="date2">to</label> <input type="text" name="date2" id="date2">
-      </div>
-      <div class="form-group">
-         <label for="time1">Time range:</label> <input type="text" name="time1">
-         <label for="time2">to</label>
-         <input type="text" name="time2">
-
-         <p>(military time, HH:MM)</p>
-      </div>
-      <div class="form-group">
-      <label for="reason">Reason:</label> <input type="text" name="reason" class="form-control">
-      </div>
-      <div class="form-group">
-      <label for="init">Initiator:</label> <input type="text" name="init">
-      </div>
-      <div class="form-group">
-      <label for="race">Race:</label>
-      <select name="race">
-      <option value=""></option>
-      <option value="African American">African American</option>
-      <option value="Asian">Asian</option>
-      <option value="Caucasian">Caucasian</option>
-      <option value="Hispanic">Hispanic</option>
-      </select>
-      </div>
-      <div class="form-group">
-      <label for="gender">Gender:</label>
-      <select name="gender">
-      <option value=""></option>
-      <option value="Female">Female</option>
-      <option value="Male">Male</option>
-      </select>
-      </div>
-      <div class="form-group">
-      <label for="search">Search?</label>
-      <select name="search">
-      <option value=""></option>
-      <option value="0">No</option>
-      <option value="1">Yes</option>
-      </select>
-      </div>
-      <div class="form-group">
-      <label for="address">Address:</label> <input type="text" name="address">
-      </div>
-      <div class="form-group">
-      <label for="disposition">Disposition:</label> <input type="text" name="disposition">
-      </div>
-      <div class="form-group">
-      <button name="submit" class="btn btn-info">Get data</button>
-      </div>
-      </form>
-   </div>
-   <div id="traffic" class="tab-pane fade">
-      <form role="form" action="javascript:get_data('traffic_stops');" name="traffic_stops" id="traffic_stops">
-
-      <p>All fields optional.</p>
-
-      <div class="form-group">
-         <label for="date1">Date range:</label> <input type="text" name="date1" id="date1">
-         <label for="date2">to</label> <input type="text" name="date2" id="date2">
-      </div>
-      <div class="form-group">
-         <label for="time1">Time range:</label> <input type="text" name="time1">
-         <label for="time2">to</label>
-         <input type="text" name="time2">
-
-         <p>(military time, HH:MM)</p>
-      </div>
-      <div class="form-group">
-      <label for="reason">Reason for stop:</label> <input type="text" name="reason" class="form-control">
-      </div>
-      <div class="form-group">
-      <label for="cit_viol">Citations/violations:</label> <input type="text" name="cit_viol" class="form-control">
-      </div>
-      <div class="form-group">
-      <label for="idot">IDOT classification:</label> <input type="text" name="idot">
-      </div>
-      <div class="form-group">
-      <label for="race">Race:</label>
-      <select name="race">
-      <option value=""></option>
-      <option value="African American">African American</option>
-      <option value="Asian">Asian</option>
-      <option value="Caucasian">Caucasian</option>
-      <option value="Hispanic">Hispanic</option>
-      </select> 
-      </div>
-      <div class="form-group">
-      <label for="gender">Gender:</label>
-      <select name="gender">
-      <option value=""></option>
-      <option value="Female">Female</option>
-      <option value="Male">Male</option>
-      </select>
-      </div>
-      <div class="form-group">
-      <label for="address">Address:</label> <input type="text" name="address">
-      </div>
-      <div class="form-group">
-      <label for="disposition">Disposition:</label> <input type="text" name="disposition">
-      </div>
-
-      <div class="form-group">
-      <button name="submit" class="btn btn-info">Get data</button>
-      </div>
-      </form>
-  </div>
-</div>
-</div>
-
-<div class="col-md-6">
-<div id="map" class="map map-home" style="height: 400px;"></div> 
-</div>
-<script>
-var map = L.map('map').setView([41.8, -87.59], 13);
-
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&amp;copy; &lt;a href="http://osm.org/copyright"&gt;OpenStreetMap&lt;/a&gt; contributors'
-}).addTo(map);
-
-var drawnItems = new L.FeatureGroup();
-map.addLayer(drawnItems);
-
-var drawControl = new L.Control.Draw({
-   draw: {
-      position: 'topleft',
-      polygon: {
-         title: 'Draw a sexy polygon!',
-         allowIntersection: false,
-         drawError: {
-            color: '#b00b00',
-            timeout: 1000
-         },
-         shapeOptions: {
-            color: '#bada55'
-         },
-         showArea: true
-      },
-      polyline: false,
-      circle: false,
-      marker: false
-   },
-   edit: {
-      featureGroup: drawnItems
-   }
-});
-map.addControl(drawControl);
-
-map.on('draw:created', function (e) {
-   var type = e.layerType,
-   layer = e.layer;
-
-   if (type === 'marker') {
-      layer.bindPopup('A popup!');
-   }
-
-   drawnItems.addLayer(layer);
-});
-</script>
-</div>
-<div class="row">
-<div class="col-md-12">
-<div id="getdata">
-<label for="api">API link:</label> <input type="text" name="api" id="api"></input> <a href="#" id="download"><button name="download" class="btn btn-success">Download CSV</button></a>
-</div>
-</div>
-</div>
-<!--
-EXPLORER
------
-pick a dataset, enter all filters, get json or csv download
-
-this is a simple flask form, which directs you to the appropriate link for csv/json
-
-MARKERS
------
-select a dataset (maybe multiple datasets is useful in this case?), filters, time range? idk
-point is you can hover over markers and see descriptions of what happened on a big map
-
-HEATMAP
-----
-similar type of thing with datasets/filters, but now a scrollable timeseries heatmap
-probably doing it block-style like plenario is best
-
-VISUALIZER
-----
-pick a dataset and filters, pick a resolution (by day, etc.), graph of frequency gets plotted
-should also be able to filter by time of day i guess
-what about cyclical plots, like frequency by season, day of week, stuff like that? hard to integrate, maybe make it separate
--->
+<h4>Other civic data in Chicago</h4>
+<ul class="bullets">
+<li>The <a href="http://safety-security.uchicago.edu/police/contact_the_ucpd/">Citizens Police Data Project</a>, a project of the <a href="http://invisible.institute/">Invisible Institute</a>, hosts and presents data on complaints against CPD officers.</li>
+<li><a href="http://plenar.io">Plenar.io</a> is a "centralized hub" for a great deal of Chicago data, including an API providing many different kinds of access and a flexible platform.</li>
+<li>The <a href="https://data.cityofchicago.org/">Chicago Data Portal</a> is the city's own repository for its datasets, from which many of the Plenar.io datasets are drawn.</li>
+<li><a href="http://chihacknight.org/">Chi Hack Night</a> is a weekly civic hacking meetup downtown, hosted by <a href="http://opencityapps.org/">Open City Apps</a>. <a href="http://datamade.us/about-us/">DataMade</a> is an associated civic tech company.</li>
+<li>At the University of Chicago, <a href="http://dssg.io/">Data Science for Social Good</a> is a summer fellowship in applying data to social issues; it is closely tied to similar work by the <a href="http://dsapp.org/">Center for Data Science and Public Policy</a> and the  <a href="http://www.urbanccd.org/#urbanccd">Urban Center for Computation and Data</a>.
 
 {% endblock %}
