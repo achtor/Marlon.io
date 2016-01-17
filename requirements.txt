@@ -1,7 +1,6 @@
 aniso8601==1.1.0
 Flask==0.10.1
 Flask-RESTful==0.3.5
-GDAL==1.11.3
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
