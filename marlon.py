@@ -66,8 +66,8 @@ class UCPD(Resource):
          if args['ucpd_num']:
             where_args = where_args + [cursor.mogrify( 'ucpd_num = %s', (args['ucpd_num'],))]
          if args['time1'] and args['time2']:
-            time1 = time.strftime('%H:%M:%S', time.strptime(args['time1'], '%H%M%S')) 
-            time2 = time.strftime('%H:%M:%S', time.strptime(args['time2'], '%H%M%S'))
+            time1 = time.strftime('%H:%M:%S', time.strptime(args['time1'], '%H:%M')) 
+            time2 = time.strftime('%H:%M:%S', time.strptime(args['time2'], '%H:%M'))
             where_args = where_args + [cursor.mogrify( 'reported::time >= %s AND reported::time < %s', (time1, time2))]
          if args['date1'] and args['date2']:
             date1 = time.strftime('%Y-%m-%d', time.strptime(args['date1'], '%Y%m%d')) 
