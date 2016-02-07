@@ -5,6 +5,7 @@ import db_conn
 import json, datetime, time
 from bson import json_util
 import io, csv
+import os, urlparse
 
 app = Flask(__name__)
 api = Api(app)
@@ -37,11 +38,22 @@ class UCPD(Resource):
 
       args = parser.parse_args()
 
-      conn_string = db_conn.conn_string
-      try:
-         conn = psycopg2.connect(conn_string)
-      except:
-         abort(500)
+      urlparse.uses_netloc.append("postgres")
+      url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
+      conn = psycopg2.connect(
+          database=url.path[1:],
+          user=url.username,
+          password=url.password,
+          host=url.hostname,
+          port=url.port
+      )
+
+      # conn_string = db_conn.conn_string
+      # try:
+      #    conn = psycopg2.connect(conn_string)
+      # except:
+      #    abort(500)
       cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
       query_string = 'SELECT *, ST_X(latlng), ST_Y(latlng) FROM ' + dataset_name
       
